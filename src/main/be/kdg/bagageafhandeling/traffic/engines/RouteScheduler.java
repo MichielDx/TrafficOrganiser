@@ -7,9 +7,11 @@ import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQSensor;
 import main.be.kdg.bagageafhandeling.traffic.adapters.out.RabbitMQ;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.APIException;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.MessageInputException;
+import main.be.kdg.bagageafhandeling.traffic.exceptions.RepositoryException;
 import main.be.kdg.bagageafhandeling.traffic.model.bagage.Baggage;
 import main.be.kdg.bagageafhandeling.traffic.model.flight.FlightInfo;
 import main.be.kdg.bagageafhandeling.traffic.model.messages.RouteMessage;
+import main.be.kdg.bagageafhandeling.traffic.model.messages.SensorMessage;
 import main.be.kdg.bagageafhandeling.traffic.model.route.Route;
 import main.be.kdg.bagageafhandeling.traffic.model.route.RouteDTO;
 import main.be.kdg.bagageafhandeling.traffic.services.BaggageRepository;
@@ -145,6 +147,14 @@ public class RouteScheduler implements Observer {
     }
 
     public void update(RabbitMQSensor rabbitMQSensor, Object arg){
+        SensorMessage sensorMessage = (SensorMessage) arg;
+        try {
+            Baggage baggage = baggageRepository.getBaggage(sensorMessage.getBaggageID());
+            new Thread(() -> doTask(baggage)).start();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage());
+        }
+
 
     }
 }

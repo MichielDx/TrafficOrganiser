@@ -1,5 +1,6 @@
 package main.be.kdg.bagageafhandeling.traffic.services;
 
+import main.be.kdg.bagageafhandeling.traffic.exceptions.RepositoryException;
 import main.be.kdg.bagageafhandeling.traffic.model.bagage.Baggage;
 
 import java.util.ArrayList;
@@ -26,4 +27,14 @@ public class BaggageRepository {
     public static List<Baggage> getBagages() {
         return baggageList;
     }
+
+    public Baggage getBaggage(int baggageId) throws RepositoryException {
+        Baggage result = null;
+        for (Baggage baggage : baggageList) {
+            if (baggage.getBaggageID() == baggageId) result = baggage;
+        }
+        if (result == null) throw new RepositoryException("Baggage with ID " + baggageId + " not found in cache.");
+        return result;
+    }
+
 }
