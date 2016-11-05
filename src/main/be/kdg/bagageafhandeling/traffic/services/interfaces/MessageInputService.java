@@ -1,6 +1,6 @@
-package main.be.kdg.bagageafhandeling.trafic.services.interfaces;
+package main.be.kdg.bagageafhandeling.traffic.services.interfaces;
 
-import main.be.kdg.bagageafhandeling.trafic.exceptions.MessageInputException;
+import main.be.kdg.bagageafhandeling.traffic.exceptions.MessageInputException;
 
 import java.util.Observer;
 
@@ -12,7 +12,6 @@ public interface MessageInputService {
      * Start up by supplying a callback object
      */
     void initialize() throws MessageInputException;
-
 
     /**
      * Close all connections to this service

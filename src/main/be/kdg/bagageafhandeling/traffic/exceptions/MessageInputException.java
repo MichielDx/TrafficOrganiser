@@ -1,4 +1,4 @@
-package main.be.kdg.bagageafhandeling.trafic.exceptions;
+package main.be.kdg.bagageafhandeling.traffic.exceptions;
 
 /**
  * Created by Michiel on 5/11/2016.

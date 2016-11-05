@@ -1,4 +1,4 @@
-package main.be.kdg.bagageafhandeling.trafic.model.dto;
+package main.be.kdg.bagageafhandeling.traffic.model.bagage;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -7,19 +7,19 @@ import java.util.Date;
 /**
  * Created by Michiel on 5/11/2016.
  */
-@XmlRootElement
-public class BagageMessageDTO {
+@XmlRootElement(name="bagage")
+public class Baggage {
     private int bagageID;
     private int flightID;
     private int conveyorID;
     private int sensorID;
     private Date timestamp;
 
-    public Bagage() {
+    public Baggage() {
     }
 
     @XmlElement
-    public int getBagageID() {
+    public int getBaggageID() {
         return bagageID;
     }
     @XmlElement
@@ -37,5 +37,25 @@ public class BagageMessageDTO {
     @XmlElement
     public Date getTimestamp() {
         return timestamp;
+    }
+
+    public void setBagageID(int bagageID) {
+        this.bagageID = bagageID;
+    }
+
+    public void setFlightID(int flightID) {
+        this.flightID = flightID;
+    }
+
+    public void setConveyorID(int conveyorID) {
+        this.conveyorID = conveyorID;
+    }
+
+    public void setSensorID(int sensorID) {
+        this.sensorID = sensorID;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 }
