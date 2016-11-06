@@ -1,4 +1,4 @@
-package main.be.kdg.bagageafhandeling.traffic;
+package main.be.kdg.bagageafhandeling.traffic.controllers;
 
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQRoute;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQSensor;

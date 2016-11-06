@@ -49,6 +49,7 @@ public class RouteScheduler implements Observer {
         List<Route> routes = null;
         Route optimalRoute = null;
         try {
+
             flightInfo = inputAPI.getFlightInfo(baggage.getFlightID());
             logger.info("Succesfully received flightInfo with ID " + flightInfo.getFlightID() + " from flightproxy");
 
@@ -59,16 +60,15 @@ public class RouteScheduler implements Observer {
             } else {
                 routeDTO = getRouteDTO(routeIDs);
             }
-            routeRepository.addRouteDTO(routeIDs, routeDTO);
-            routes = convertRouteDTO(routeDTO);
-            optimalRoute = getOptimalRoute(routes);
-            if(baggage.getConveyorID() == optimalRoute.getConveyorIDs().get(optimalRoute.getConveyorIDs().size()-1)){
+            if(baggage.getConveyorID() == flightInfo.getBoardingConveyorID()){
                 trafficOutput.publishStatus(new StatusMessage(baggage.getBaggageID(),"arrived",baggage.getConveyorID()));
-                logger.info("Statusmessage with status 'arrived' created for baggage with id: "+baggage.getBaggageID());
             } else {
+                routeRepository.addRouteDTO(routeIDs, routeDTO);
+                routes = convertRouteDTO(routeDTO);
+                optimalRoute = getOptimalRoute(routes);
                 trafficOutput.publish(new RouteMessage(baggage.getBaggageID(),optimalRoute.getConveyorIDs().get(1)));
-                logger.info("Routemessage created for baggage with id: "+baggage.getBaggageID());
             }
+
         } catch (APIException e) {
             logger.error(e.getMessage());
         }
@@ -81,7 +81,7 @@ public class RouteScheduler implements Observer {
         } catch (APIException e) {
             logger.error(e.getMessage());
         }
-        if(routeDTO == null || routeDTO.getRoutes() == null){
+        if(routeDTO == null){
             try {
                 Thread.sleep(5000);
                 routeDTO = getRouteDTO(routeIDs);
@@ -146,7 +146,10 @@ public class RouteScheduler implements Observer {
     public void update(RabbitMQSensor rabbitMQSensor, Object arg){
         SensorMessage sensorMessage = (SensorMessage) arg;
         try {
+
             Baggage baggage = baggageRepository.getBaggage(sensorMessage.getBaggageID());
+            baggage.setConveyorID(sensorMessage.getConveyorID());
+            baggageRepository.updateBagage(baggage);
             new Thread(() -> doTask(baggage)).start();
         } catch (RepositoryException e) {
             logger.error(e.getMessage());
