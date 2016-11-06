@@ -48,16 +48,13 @@ public class RouteScheduler implements Observer {
         String routeIDs = "";
         List<Route> routes = null;
         Route optimalRoute = null;
+        logger.info("Calculating route for baggage with id: " + baggage.getBaggageID());
         try {
             if (inComingConveyorID != baggage.getConveyorID()){
                 baggage.setConveyorID(inComingConveyorID);
             }
             flightInfo = inputAPI.getFlightInfo(baggage.getFlightID());
-            logger.info("Succesfully received flightInfo with ID " + flightInfo.getFlightID() + " from flightproxy");
-
             routeIDs += baggage.getConveyorID() + "-" + flightInfo.getBoardingConveyorID();
-            logger.info("Succesfully received routeDTO for flight with " + flightInfo.getFlightID() + " from conveyorproxy");
-
             if (routeRepository.contains(routeIDs)) {
                 routeDTO = routeRepository.getRouteDTO(routeIDs);
             } else {
