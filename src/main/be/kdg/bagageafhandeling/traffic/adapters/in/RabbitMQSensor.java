@@ -69,9 +69,7 @@ public class RabbitMQSensor extends Observable implements MessageInputService {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
                         throws IOException {
-                    logger.info("Received message from RabbitMQRoute queue " + queueName);
                     String message = new String(body, "UTF-8");
-                    logger.debug("Message content: " + message);
                     try {
                         jaxbContext = JAXBContext.newInstance(SensorMessage.class);
                         jaxbUnmarshaller = jaxbContext.createUnmarshaller();
