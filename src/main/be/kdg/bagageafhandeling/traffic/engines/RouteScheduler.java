@@ -48,7 +48,7 @@ public class RouteScheduler implements Observer {
         String routeIDs = "";
         List<Route> routes = null;
         Route optimalRoute = null;
-        logger.info("Calculating route for baggage with id: " + baggage.getBaggageID());
+        logger.info("Calculating route for baggage ID=" + baggage.getBaggageID());
         try {
             flightInfo = inputAPI.getFlightInfo(baggage.getFlightID());
             routeIDs += baggage.getConveyorID() + "-" + flightInfo.getBoardingConveyorID();
@@ -59,8 +59,10 @@ public class RouteScheduler implements Observer {
             }
             if (baggage.getConveyorID() == flightInfo.getBoardingConveyorID()) {
                 statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "arrived", baggage.getConveyorID()));
+                logger.info("Published StatusMessage arrived for baggage ID=" + baggage.getBaggageID());
             } else if (routeDTO.getRoutes() == null) {
                 statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "undeliverable", baggage.getConveyorID()));
+                logger.info("Published StatusMessage undeliverable for baggage ID=" + baggage.getBaggageID());
                 baggageRepository.updateBagage(baggage);
                 return;
             } else {
@@ -69,9 +71,8 @@ public class RouteScheduler implements Observer {
                 optimalRoute = getOptimalRoute(routes);
                 routePublisher.publish(new RouteMessage(baggage.getBaggageID(), optimalRoute.getConveyorIDs().get(1)));
                 baggage.setConveyorID(optimalRoute.getConveyorIDs().get(1));
+                logger.info("Published RouteMessage containing next conveyor for baggage ID=" + baggage.getBaggageID());
             }
-
-
             baggageRepository.updateBagage(baggage);
         } catch (APIException e) {
             logger.error(e.getMessage());
@@ -158,10 +159,5 @@ public class RouteScheduler implements Observer {
             logger.error(e.getMessage());
         }
     }
-
-    public void checkIfBaggageMissing(SensorMessage sensorMessage, Baggage baggage) {
-        if (sensorMessage.getConveyorID() != baggage.getConveyorID()) {
-            statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "undeliverable", baggage.getConveyorID()));
-        }
-    }
+    
 }
