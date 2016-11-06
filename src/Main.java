@@ -1,5 +1,7 @@
 import be.kdg.se3.proxy.ConveyorServiceProxy;
 import main.be.kdg.bagageafhandeling.traffic.engines.RouteScheduler;
+import main.be.kdg.bagageafhandeling.traffic.services.BaggageRepository;
+import main.be.kdg.bagageafhandeling.traffic.services.route.RouteRepository;
 
 import java.io.IOException;
 
@@ -8,6 +10,6 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) {
-        RouteScheduler routeScheduler = new RouteScheduler();
+        RouteScheduler routeScheduler = new RouteScheduler(new BaggageRepository(), new RouteRepository());
     }
 }

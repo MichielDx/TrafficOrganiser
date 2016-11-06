@@ -7,9 +7,9 @@ import java.util.Date;
 /**
  * Created by Michiel on 5/11/2016.
  */
-@XmlRootElement(name="bagage")
+@XmlRootElement(name="baggage")
 public class Baggage {
-    private int bagageID;
+    private int baggageID;
     private int flightID;
     private int conveyorID;
     private int sensorID;
@@ -20,7 +20,7 @@ public class Baggage {
 
     @XmlElement
     public int getBaggageID() {
-        return bagageID;
+        return baggageID;
     }
     @XmlElement
     public int getFlightID() {
@@ -39,8 +39,8 @@ public class Baggage {
         return timestamp;
     }
 
-    public void setBagageID(int bagageID) {
-        this.bagageID = bagageID;
+    public void setBaggageID(int baggageID) {
+        this.baggageID = baggageID;
     }
 
     public void setFlightID(int flightID) {

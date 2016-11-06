@@ -27,7 +27,7 @@ public class TrafficInput {
     }
 
     public void initializeRabbitMQ(RouteScheduler routeScheduler) throws MessageInputException {
-        rabbitMQRoute = new RabbitMQRoute("bagageOutputQueue");
+        rabbitMQRoute = new RabbitMQRoute("baggageOutputQueue");
         rabbitMQRoute.initialize();
         rabbitMQRoute.addObserver(routeScheduler);
         rabbitMQRoute.retrieve();

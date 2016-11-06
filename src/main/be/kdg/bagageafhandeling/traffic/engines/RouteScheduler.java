@@ -4,7 +4,6 @@ import main.be.kdg.bagageafhandeling.traffic.adapters.in.ConveyorServiceAPI;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.FlightServiceAPI;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQRoute;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQSensor;
-import main.be.kdg.bagageafhandeling.traffic.adapters.out.RabbitMQ;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.APIException;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.MessageInputException;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.RepositoryException;
