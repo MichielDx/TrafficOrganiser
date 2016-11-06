@@ -33,10 +33,10 @@ public class RouteScheduler implements Observer {
     private RouteRepository routeRepository;
     private Logger logger = Logger.getLogger(RouteScheduler.class);
 
-    public RouteScheduler(BaggageRepository baggageRepository, RouteRepository routeRepository, InputAPI inputAPI) {
+    public RouteScheduler(BaggageRepository baggageRepository, RouteRepository routeRepository, InputAPI inputAPI, TrafficOutput trafficOutput) {
         this.baggageRepository = baggageRepository;
         this.routeRepository = routeRepository;
-        this.trafficOutput = new TrafficOutput();
+        this.trafficOutput = trafficOutput;
         this.inputAPI = inputAPI;
     }
 

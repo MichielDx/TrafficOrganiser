@@ -4,6 +4,7 @@ import main.be.kdg.bagageafhandeling.traffic.adapters.out.RabbitMQ;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.MessageOutputException;
 import main.be.kdg.bagageafhandeling.traffic.model.messages.RouteMessage;
 import main.be.kdg.bagageafhandeling.traffic.model.messages.StatusMessage;
+import main.be.kdg.bagageafhandeling.traffic.services.interfaces.MessageOutputService;
 import main.be.kdg.bagageafhandeling.traffic.services.route.RouteXmlService;
 import org.apache.log4j.Logger;
 
@@ -11,16 +12,17 @@ import org.apache.log4j.Logger;
  * Created by Michiel on 5/11/2016.
  */
 public class TrafficOutput {
-    private RabbitMQ rabbitMQRoute;
-    private RabbitMQ rabbitMQStatus;
+    private MessageOutputService rabbitMQRoute;
+    private MessageOutputService rabbitMQStatus;
     private Logger logger = Logger.getLogger(TrafficOutput.class);
     private RouteXmlService routeXmlService;
     private StatusXmlService statusXmlService;
 
-    public TrafficOutput() {
-        rabbitMQRoute = new RabbitMQ("routeOutputQueue");
-        rabbitMQStatus = new RabbitMQ("statusOutputQueue");
+    public TrafficOutput(MessageOutputService route, MessageOutputService status) {
+        rabbitMQRoute = route;
+        rabbitMQStatus = status;
         routeXmlService = new RouteXmlService();
+        statusXmlService = new StatusXmlService();
         initialize();
     }
 
