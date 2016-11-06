@@ -14,6 +14,9 @@ public class RouteMessage {
     @XmlElement
     private int conveyorID;
 
+    public RouteMessage() {
+    }
+
     public RouteMessage(int baggageID, int conveyorID) {
         this.baggageID = baggageID;
         this.conveyorID = conveyorID;
