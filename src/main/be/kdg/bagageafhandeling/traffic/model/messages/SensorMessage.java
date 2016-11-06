@@ -2,6 +2,8 @@ package main.be.kdg.bagageafhandeling.traffic.model.messages;
 
 
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Date;
  * Created by Michiel on 5/11/2016.
  */
 @XmlRootElement(name = "sensor")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SensorMessage {
     @XmlElement
     private int baggageID;
@@ -17,6 +20,9 @@ public class SensorMessage {
     private int conveyorID;
     @XmlElement
     private Date timestamp;
+
+    public SensorMessage() {
+    }
 
     public SensorMessage(int baggageID, int conveyorID, Date timestamp) {
         this.baggageID = baggageID;
