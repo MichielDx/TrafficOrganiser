@@ -81,14 +81,16 @@ public class RouteScheduler implements Observer {
     private RouteDTO getRouteDTO(String routeIDs) {
         RouteDTO routeDTO = null;
         try {
-            return trafficInput.getRoutes(routeIDs);
+            routeDTO = trafficInput.getRoutes(routeIDs);
         } catch (APIException e) {
             logger.error(e.getMessage());
+        }
+        if(routeDTO == null || routeDTO.getRoutes() == null){
             try {
                 Thread.sleep(5000);
                 routeDTO = getRouteDTO(routeIDs);
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         return routeDTO;
