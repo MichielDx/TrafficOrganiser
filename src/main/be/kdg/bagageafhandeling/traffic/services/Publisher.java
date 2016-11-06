@@ -28,7 +28,7 @@ public class Publisher {
         }
     }
 
-    public void publish(Object object) {
+    public synchronized void publish(Object object) {
         try {
             messageOutputService.publish(xmlService.serialize(object));
         } catch (MessageOutputException e) {
