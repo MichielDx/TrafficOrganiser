@@ -42,8 +42,6 @@ public class Controller {
         routeScheduler = new RouteScheduler(new BaggageRepository(), new RouteRepository(), inputAPI, trafficOutput);
         routeMessageRetriever = new Retriever(routeInputMessageQueue, routeScheduler);
         sensorMessageRetriever = new Retriever(sensorInputMessageQueue, routeScheduler);
-        routeMessageRetriever.initialize();
-        sensorMessageRetriever.initialize();
     }
 
     public void setRouteInputMessageQueue(MessageInputService service) {

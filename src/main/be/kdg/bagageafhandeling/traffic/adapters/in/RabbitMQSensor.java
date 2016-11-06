@@ -25,7 +25,7 @@ public class RabbitMQSensor extends Observable implements MessageInputService {
     private Connection connection;
     private Channel channel;
 
-    private Logger logger = Logger.getLogger(RabbitMQRoute.class);
+    private Logger logger = Logger.getLogger(RabbitMQSensor.class);
 
     public RabbitMQSensor(String queueName) {
         this.queueName = queueName;

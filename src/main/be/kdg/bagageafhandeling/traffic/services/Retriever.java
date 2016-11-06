@@ -15,7 +15,7 @@ public class Retriever {
         rabbitMQ.addObserver(observer);
         initialize();
     }
-    public void initialize(){
+    private void initialize(){
         try {
             rabbitMQ.initialize();
             rabbitMQ.retrieve();
