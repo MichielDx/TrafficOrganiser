@@ -30,6 +30,7 @@ public class RabbitMQRoute extends Observable implements MessageInputService {
         this.queueName = queueName;
     }
 
+
     @Override
     public void initialize() throws MessageInputException {
         try {

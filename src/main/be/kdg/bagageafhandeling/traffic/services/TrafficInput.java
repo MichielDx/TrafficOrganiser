@@ -17,24 +17,11 @@ import org.apache.log4j.Logger;
  */
 public class TrafficInput {
     private Logger logger = Logger.getLogger(TrafficInput.class);
-    private MessageInputService rabbitMQRoute;
-    private MessageInputService rabbitMQSensor;
     private FlightService flightServiceAPI;
     private ConveyorService conveyorServiceAPI;
 
     public TrafficInput() {
 
-    }
-
-    public void initializeRabbitMQ(RouteScheduler routeScheduler) throws MessageInputException {
-        rabbitMQRoute = new RabbitMQRoute("baggageOutputQueue");
-        rabbitMQRoute.initialize();
-        rabbitMQRoute.addObserver(routeScheduler);
-        rabbitMQRoute.retrieve();
-        rabbitMQSensor = new RabbitMQSensor("sensorOutputQueue");
-        rabbitMQSensor.initialize();
-        rabbitMQSensor.addObserver(routeScheduler);
-        rabbitMQSensor.retrieve();
     }
 
     public void initializeFlightServiceAPI(FlightService flightServiceAPI){

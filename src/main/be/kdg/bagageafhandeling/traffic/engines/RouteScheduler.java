@@ -46,11 +46,6 @@ public class RouteScheduler implements Observer {
     public void initialize() {
         trafficInput.initializeFlightServiceAPI(new FlightServiceAPI());
         trafficInput.initializeConveyorServiceAPI(new ConveyorServiceAPI());
-        try {
-            trafficInput.initializeRabbitMQ(this);
-        } catch (MessageInputException e) {
-            e.printStackTrace();
-        }
     }
 
     private void doTask(Baggage baggage) {
