@@ -44,10 +44,7 @@ public class Controller {
         lostScheduler = new LostScheduler(statusPublisher, 300000, timeDifference);
         routeMessageRetriever = new Retriever(routeInputMessageQueue, routeScheduler);
         sensorMessageRetriever = new Retriever(sensorInputMessageQueue, routeScheduler);
-<<<<<<< HEAD:src/main/be/kdg/bagageafhandeling/traffic/Controller.java
-=======
         new Thread(lostScheduler).start();
->>>>>>> 4b08b224b7a37862e30485a86c529ca32a7bfdad:src/main/be/kdg/bagageafhandeling/traffic/controllers/Controller.java
     }
 
     public void setRouteInputMessageQueue(MessageInputService service) {
