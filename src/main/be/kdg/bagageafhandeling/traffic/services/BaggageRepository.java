@@ -3,42 +3,39 @@ package main.be.kdg.bagageafhandeling.traffic.services;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.RepositoryException;
 import main.be.kdg.bagageafhandeling.traffic.model.bagage.Baggage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Michiel on 5/11/2016.
  */
 public class BaggageRepository {
-    private static List<Baggage> baggageList;
+    private static ConcurrentMap<Integer, Baggage> baggages;
 
     public BaggageRepository() {
-        baggageList = new ArrayList<>();
+        baggages = new ConcurrentHashMap<>();
     }
 
-    public synchronized void addBagage(Baggage baggage) {
-        baggageList.add(baggage);
+    public void addBagage(Baggage baggage) {
+        baggages.put(baggage.getBaggageID(),baggage);
     }
 
-    public synchronized void updateBagage(Baggage baggage) {
-        baggageList.set(baggage.getBaggageID()-1, baggage);
-
+    public void updateBagage(Baggage baggage) {
+        baggages.replace(baggage.getBaggageID(),baggage);
     }
 
-    public static List<Baggage> getBagages() {
-        return baggageList;
+    public static ConcurrentMap<Integer,Baggage> getBagages() {
+        return baggages;
     }
 
     public Baggage getBaggage(int baggageId) throws RepositoryException {
-        Baggage result = null;
-        for (Baggage baggage : baggageList) {
-            if (baggage.getBaggageID() == baggageId) result = baggage;
-        }
+        Baggage result = baggages.get(baggageId);
+
         if (result == null) throw new RepositoryException("Baggage with ID " + baggageId + " not found in cache.");
         return result;
     }
 
-    public static synchronized void remove(Baggage baggage){
-        baggageList.remove(baggage);
+    public static void remove(Baggage baggage){
+        baggages.remove(baggage.getBaggageID());
     }
 }

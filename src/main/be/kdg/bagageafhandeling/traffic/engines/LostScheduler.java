@@ -1,11 +1,15 @@
 package main.be.kdg.bagageafhandeling.traffic.engines;
+
 import main.be.kdg.bagageafhandeling.traffic.model.bagage.Baggage;
 import main.be.kdg.bagageafhandeling.traffic.model.messages.StatusMessage;
 import main.be.kdg.bagageafhandeling.traffic.services.BaggageRepository;
 import main.be.kdg.bagageafhandeling.traffic.services.Publisher;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Michiel on 6/11/2016.
@@ -27,13 +31,17 @@ public class LostScheduler implements Runnable {
         while (true) {
             try {
                 Thread.sleep(frequency);
-                List<Baggage> baggages = BaggageRepository.getBagages();
-                for (int i = 0; i < baggages.size(); i++) {
-                    if ((System.currentTimeMillis() - baggages.get(i).getTimestamp().getTime()) > timeDifference) {
-                        statusPublisher.publish(new StatusMessage(baggages.get(i).getBaggageID(), "lost", baggages.get(i).getConveyorID()));
-                        logger.info(String.format("Removed baggage with id: %d from cache due to not receiving a sensormessage for over %d seconds", baggages.get(i).getBaggageID(), timeDifference / 1000));
-                        BaggageRepository.remove(baggages.get(i));
-                    }
+                List<Baggage> baggageList = new ArrayList<>();
+                ConcurrentMap<Integer, Baggage> baggages = BaggageRepository.getBagages();
+                for(Baggage baggage : baggages.values()){
+                    if ((System.currentTimeMillis() - baggage.getTimestamp().getTime()) > timeDifference) {{
+                        baggageList.add(baggage);
+                    }}
+                }
+                for(Baggage baggage : baggageList){
+                    statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "lost", baggage.getConveyorID()));
+                    logger.info(String.format("Removed baggage with id: %d from cache due to not receiving a sensormessage for over %d seconds", baggage.getBaggageID(), timeDifference / 1000));
+                    BaggageRepository.remove(baggage);
                 }
             } catch (InterruptedException e) {
                 logger.error(e.getMessage());

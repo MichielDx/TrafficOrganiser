@@ -115,7 +115,7 @@ public class RouteScheduler implements Observer {
         int min = Integer.MAX_VALUE;
         int counter;
         Route optimalRoute = null;
-        for (Baggage baggage : BaggageRepository.getBagages()) {
+        for (Baggage baggage : BaggageRepository.getBagages().values()) {
             for (Route route : routes) {
                 counter = 0;
                 for (int conveyorID : route.getConveyorIDs()) {

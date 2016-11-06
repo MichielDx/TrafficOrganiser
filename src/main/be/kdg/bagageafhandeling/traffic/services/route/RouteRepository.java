@@ -4,18 +4,20 @@ import main.be.kdg.bagageafhandeling.traffic.model.route.RouteDTO;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Michiel on 5/11/2016.
  */
 public class RouteRepository {
-    private static Map<String,RouteDTO> conveyorCache;
+    private static ConcurrentMap<String,RouteDTO> conveyorCache;
 
     public RouteRepository() {
-        conveyorCache = new HashMap<>();
+        conveyorCache = new ConcurrentHashMap<>();
     }
 
-    public synchronized void addRouteDTO(String routeIDs,RouteDTO routeDTO){
+    public void addRouteDTO(String routeIDs,RouteDTO routeDTO){
         conveyorCache.put(routeIDs,routeDTO);
     }
 
