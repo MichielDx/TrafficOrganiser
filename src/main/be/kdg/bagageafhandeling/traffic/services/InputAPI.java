@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
  * Created by Michiel on 5/11/2016.
  */
 public class InputAPI {
-    private Logger logger = Logger.getLogger(InputAPI.class);
     private FlightService flightServiceAPI;
     private ConveyorService conveyorServiceAPI;
 

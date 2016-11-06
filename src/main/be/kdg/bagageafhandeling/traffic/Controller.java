@@ -18,7 +18,7 @@ import java.io.File;
  * Created by Arthur Haelterman on 6/11/2016.
  */
 public class Controller {
-    String path = new File("src/main/log4j.properties").getAbsolutePath();
+    private String path = new File("src/main/log4j.properties").getAbsolutePath();
     private ConveyorService conveyorService;
     private FlightService flightService;
     private MessageInputService routeMessageQueue;
