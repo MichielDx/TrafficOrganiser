@@ -42,16 +42,13 @@ public class RouteScheduler implements Observer {
         this.inputAPI = inputAPI;
     }
 
-    private void doTask(Baggage baggage, int inComingConveyorID) {
+    private void doTask(Baggage baggage) {
         FlightInfo flightInfo = null;
         RouteDTO routeDTO = null;
         String routeIDs = "";
         List<Route> routes = null;
         Route optimalRoute = null;
         try {
-            if (inComingConveyorID != baggage.getConveyorID()){
-                baggage.setConveyorID(inComingConveyorID);
-            }
             flightInfo = inputAPI.getFlightInfo(baggage.getFlightID());
             logger.info("Succesfully received flightInfo with ID " + flightInfo.getFlightID() + " from flightproxy");
 
@@ -63,13 +60,12 @@ public class RouteScheduler implements Observer {
             } else {
                 routeDTO = getRouteDTO(routeIDs);
             }
-            if(routeDTO.getRoutes() == null){
+            if (baggage.getConveyorID() == flightInfo.getBoardingConveyorID()) {
+                statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "arrived", baggage.getConveyorID()));
+            } else if (routeDTO.getRoutes() == null) {
                 statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "undeliverable", baggage.getConveyorID()));
                 baggageRepository.updateBagage(baggage);
                 return;
-            }
-            if (baggage.getConveyorID() == flightInfo.getBoardingConveyorID()) {
-                statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "arrived", baggage.getConveyorID()));
             } else {
                 routeRepository.addRouteDTO(routeIDs, routeDTO);
                 routes = convertRouteDTO(routeDTO);
@@ -77,6 +73,8 @@ public class RouteScheduler implements Observer {
                 routePublisher.publish(new RouteMessage(baggage.getBaggageID(), optimalRoute.getConveyorIDs().get(1)));
                 baggage.setConveyorID(optimalRoute.getConveyorIDs().get(1));
             }
+
+
             baggageRepository.updateBagage(baggage);
         } catch (APIException e) {
             logger.error(e.getMessage());
@@ -149,22 +147,23 @@ public class RouteScheduler implements Observer {
     public void update(RabbitMQRoute rabbitMQRoute, Object arg) {
         Baggage baggage = (Baggage) arg;
         baggageRepository.addBagage(baggage);
-        new Thread(() -> doTask(baggage,baggage.getConveyorID())).start();
+        new Thread(() -> doTask(baggage)).start();
     }
 
     public void update(RabbitMQSensor rabbitMQSensor, Object arg) {
         SensorMessage sensorMessage = (SensorMessage) arg;
         try {
             Baggage baggage = baggageRepository.getBaggage(sensorMessage.getBaggageID());
+            baggage.setConveyorID(sensorMessage.getConveyorID());
             baggage.setTimestamp(sensorMessage.getTimestamp());
-            new Thread(() -> doTask(baggage,sensorMessage.getConveyorID())).start();
+            new Thread(() -> doTask(baggage)).start();
         } catch (RepositoryException e) {
             logger.error(e.getMessage());
         }
     }
 
-    public void checkIfBaggageMissing(SensorMessage sensorMessage, Baggage baggage){
-        if (sensorMessage.getConveyorID() != baggage.getConveyorID()){
+    public void checkIfBaggageMissing(SensorMessage sensorMessage, Baggage baggage) {
+        if (sensorMessage.getConveyorID() != baggage.getConveyorID()) {
             statusPublisher.publish(new StatusMessage(baggage.getBaggageID(), "undeliverable", baggage.getConveyorID()));
         }
     }
