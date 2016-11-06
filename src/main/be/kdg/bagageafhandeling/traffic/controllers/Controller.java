@@ -2,13 +2,14 @@ package main.be.kdg.bagageafhandeling.traffic.controllers;
 
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQRoute;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQSensor;
+import main.be.kdg.bagageafhandeling.traffic.adapters.out.RabbitMQ;
+import main.be.kdg.bagageafhandeling.traffic.engines.LostScheduler;
 import main.be.kdg.bagageafhandeling.traffic.engines.RouteScheduler;
-import main.be.kdg.bagageafhandeling.traffic.services.BaggageRepository;
-import main.be.kdg.bagageafhandeling.traffic.services.InputAPI;
-import main.be.kdg.bagageafhandeling.traffic.services.Retriever;
+import main.be.kdg.bagageafhandeling.traffic.services.*;
 import main.be.kdg.bagageafhandeling.traffic.services.interfaces.ConveyorService;
 import main.be.kdg.bagageafhandeling.traffic.services.interfaces.FlightService;
 import main.be.kdg.bagageafhandeling.traffic.services.interfaces.MessageInputService;
+import main.be.kdg.bagageafhandeling.traffic.services.interfaces.MessageOutputService;
 import main.be.kdg.bagageafhandeling.traffic.services.route.RouteRepository;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -18,43 +19,59 @@ import java.io.File;
  * Created by Arthur Haelterman on 6/11/2016.
  */
 public class Controller {
-    String path = new File("src/main/log4j.properties").getAbsolutePath();
+    private String path = new File("src/main/log4j.properties").getAbsolutePath();
     private ConveyorService conveyorService;
     private FlightService flightService;
-    private MessageInputService routeMessageQueue;
-    private MessageInputService sensorMessageQueue;
+    private MessageInputService routeInputMessageQueue;
+    private MessageInputService sensorInputMessageQueue;
+    private MessageOutputService routeOutputMessageQueue;
+    private MessageOutputService statusOutputMessageQueue;
     private Retriever routeMessageRetriever;
     private Retriever sensorMessageRetriever;
-    private InputAPI inputAPI;
     private RouteScheduler routeScheduler;
+    private LostScheduler lostScheduler;
+    private long timeDifference;
 
-    public Controller(){
+    public Controller() {
     }
 
-    public void initialize(){
+    public void initialize() {
         PropertyConfigurator.configure(path);
-        inputAPI = new InputAPI(flightService,conveyorService);
-        routeScheduler = new RouteScheduler(new BaggageRepository(), new RouteRepository(), inputAPI);
-        routeMessageRetriever = new Retriever(routeMessageQueue,routeScheduler);
-        sensorMessageRetriever = new Retriever(sensorMessageQueue,routeScheduler);
-        routeMessageRetriever.initialize();
-        sensorMessageRetriever.initialize();
-
+        InputAPI inputAPI = new InputAPI(flightService, conveyorService);
+        Publisher routePublisher = new Publisher(routeOutputMessageQueue, new XmlServiceImpl());
+        Publisher statusPublisher = new Publisher(statusOutputMessageQueue, new XmlServiceImpl());
+        routeScheduler = new RouteScheduler(new BaggageRepository(), new RouteRepository(), inputAPI, routePublisher, statusPublisher);
+        lostScheduler = new LostScheduler(statusPublisher, 300000, timeDifference);
+        routeMessageRetriever = new Retriever(routeInputMessageQueue, routeScheduler);
+        sensorMessageRetriever = new Retriever(sensorInputMessageQueue, routeScheduler);
+        new Thread(lostScheduler).start();
     }
 
-    public void setRouteMessageQueue(MessageInputService service){
-        this.routeMessageQueue = service;
+    public void setRouteInputMessageQueue(MessageInputService service) {
+        this.routeInputMessageQueue = service;
     }
 
-    public void setSensorMessageQueue(MessageInputService service){
-        this.sensorMessageQueue = service;
+    public void setSensorInputMessageQueue(MessageInputService service) {
+        this.sensorInputMessageQueue = service;
     }
 
-    public void setConveyorService(ConveyorService conveyorService){
-        this.conveyorService=conveyorService;
+    public void setConveyorService(ConveyorService conveyorService) {
+        this.conveyorService = conveyorService;
     }
 
     public void setFlightService(FlightService flightService) {
         this.flightService = flightService;
+    }
+
+    public void setStatusOutputMessageQueue(MessageOutputService statusOutputMessageQueue) {
+        this.statusOutputMessageQueue = statusOutputMessageQueue;
+    }
+
+    public void setRouteOutputMessageQueue(MessageOutputService routeOutputMessageQueue) {
+        this.routeOutputMessageQueue = routeOutputMessageQueue;
+    }
+
+    public void setTimeDifference(long timeDifference) {
+        this.timeDifference = timeDifference;
     }
 }

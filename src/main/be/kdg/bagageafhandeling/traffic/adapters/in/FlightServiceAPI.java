@@ -15,7 +15,6 @@ import java.io.IOException;
  * Created by Michiel on 5/11/2016.
  */
 public class FlightServiceAPI implements FlightService{
-    private FlightService flightService;
     private Retrofit retrofit;
     private FlightInfo flightInfo;
     private FlightServiceProxy flightServiceProxy;

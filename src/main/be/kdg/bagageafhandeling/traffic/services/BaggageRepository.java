@@ -37,4 +37,7 @@ public class BaggageRepository {
         return result;
     }
 
+    public static synchronized void remove(Baggage baggage){
+        baggageList.remove(baggage);
+    }
 }

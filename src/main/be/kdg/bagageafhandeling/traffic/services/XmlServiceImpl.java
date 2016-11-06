@@ -1,6 +1,7 @@
-package main.be.kdg.bagageafhandeling.traffic.services.route;
+package main.be.kdg.bagageafhandeling.traffic.services;
 
 import main.be.kdg.bagageafhandeling.traffic.model.messages.RouteMessage;
+import main.be.kdg.bagageafhandeling.traffic.services.interfaces.XmlService;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,18 +14,18 @@ import java.io.StringWriter;
 /**
  * Created by Michiel on 5/11/2016.
  */
-public class RouteXmlService {
+public class XmlServiceImpl implements XmlService{
     private JAXBContext jaxbContext;
     private Marshaller jaxbMarshaller;
     private StringWriter sw;
     private String xmlString;
 
-    public String serialize(RouteMessage routeMessage) {
+    public String serialize(Object object) {
         try {
-            jaxbContext = JAXBContext.newInstance(RouteMessage.class);
+            jaxbContext = JAXBContext.newInstance(object.getClass());
             jaxbMarshaller = jaxbContext.createMarshaller();
             sw = new StringWriter();
-            jaxbMarshaller.marshal(routeMessage, sw);
+            jaxbMarshaller.marshal(object, sw);
             xmlString = sw.toString();
 
         } catch (JAXBException e) {

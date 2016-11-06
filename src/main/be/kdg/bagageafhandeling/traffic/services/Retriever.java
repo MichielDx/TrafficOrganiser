@@ -2,6 +2,7 @@ package main.be.kdg.bagageafhandeling.traffic.services;
 
 import main.be.kdg.bagageafhandeling.traffic.exceptions.MessageInputException;
 import main.be.kdg.bagageafhandeling.traffic.services.interfaces.MessageInputService;
+import org.apache.log4j.Logger;
 
 import java.util.Observer;
 
@@ -10,17 +11,20 @@ import java.util.Observer;
  */
 public class Retriever {
     private MessageInputService rabbitMQ;
+    private Logger logger = Logger.getLogger(Retriever.class);
+
     public Retriever(MessageInputService service, Observer observer){
         rabbitMQ = service;
         rabbitMQ.addObserver(observer);
         initialize();
     }
-    public void initialize(){
+    private void initialize(){
         try {
             rabbitMQ.initialize();
             rabbitMQ.retrieve();
         } catch (MessageInputException e) {
-            e.getMessage();
+            logger.error(e.getMessage());
+            logger.error(e.getCause().getMessage());
         }
     }
 }

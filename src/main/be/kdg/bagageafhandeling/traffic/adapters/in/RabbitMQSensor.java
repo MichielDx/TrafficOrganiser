@@ -25,7 +25,7 @@ public class RabbitMQSensor extends Observable implements MessageInputService {
     private Connection connection;
     private Channel channel;
 
-    private Logger logger = Logger.getLogger(RabbitMQRoute.class);
+    private Logger logger = Logger.getLogger(RabbitMQSensor.class);
 
     public RabbitMQSensor(String queueName) {
         this.queueName = queueName;
@@ -45,7 +45,7 @@ public class RabbitMQSensor extends Observable implements MessageInputService {
         } catch (IOException | TimeoutException e) {
             throw new MessageInputException("Unable to connect to RabbitMQRoute", e);
         }
-        logger.info("Succesfully connected to RabbitMQRoute queue: " + queueName);
+        logger.info("Succesfully connected to RabbitMQSensor queue: " + queueName);
     }
 
     @Override
