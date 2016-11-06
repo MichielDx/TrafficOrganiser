@@ -8,6 +8,7 @@ import main.be.kdg.bagageafhandeling.traffic.model.bagage.Baggage;
 import main.be.kdg.bagageafhandeling.traffic.model.flight.FlightInfo;
 import main.be.kdg.bagageafhandeling.traffic.model.messages.RouteMessage;
 import main.be.kdg.bagageafhandeling.traffic.model.messages.SensorMessage;
+import main.be.kdg.bagageafhandeling.traffic.model.messages.StatusMessage;
 import main.be.kdg.bagageafhandeling.traffic.model.route.Route;
 import main.be.kdg.bagageafhandeling.traffic.model.route.RouteDTO;
 import main.be.kdg.bagageafhandeling.traffic.services.BaggageRepository;
@@ -48,6 +49,7 @@ public class RouteScheduler implements Observer {
         try {
             flightInfo = inputAPI.getFlightInfo(baggage.getFlightID());
             logger.info("Succesfully received flightInfo with ID " + flightInfo.getFlightID() + " from flightproxy");
+
             routeIDs += baggage.getConveyorID() + "-" + flightInfo.getBoardingConveyorID();
             logger.info("Succesfully received routeDTO for flight with " + flightInfo.getFlightID() + " from conveyorproxy");
             if (routeRepository.contains(routeIDs)) {
@@ -58,7 +60,13 @@ public class RouteScheduler implements Observer {
             routeRepository.addRouteDTO(routeIDs, routeDTO);
             routes = convertRouteDTO(routeDTO);
             optimalRoute = getOptimalRoute(routes);
-            trafficOutput.publish(new RouteMessage(baggage.getBaggageID(),optimalRoute.getConveyorIDs().get(1)));
+            if(baggage.getConveyorID() == optimalRoute.getConveyorIDs().get(optimalRoute.getConveyorIDs().size()-1)){
+                trafficOutput.publishStatus(new StatusMessage(baggage.getBaggageID(),"arrived",baggage.getConveyorID()));
+                logger.info("Statusmessage with status 'arrived' created for baggage with id: "+baggage.getBaggageID());
+            } else {
+                trafficOutput.publish(new RouteMessage(baggage.getBaggageID(),optimalRoute.getConveyorIDs().get(1)));
+                logger.info("Routemessage created for baggage with id: "+baggage.getBaggageID());
+            }
         } catch (APIException e) {
             logger.error(e.getMessage());
         }
