@@ -45,7 +45,7 @@ public class RabbitMQSensor extends Observable implements MessageInputService {
         } catch (IOException | TimeoutException e) {
             throw new MessageInputException("Unable to connect to RabbitMQRoute", e);
         }
-        logger.info("Succesfully connected to RabbitMQRoute queue: " + queueName);
+        logger.info("Succesfully connected to RabbitMQSensor queue: " + queueName);
     }
 
     @Override

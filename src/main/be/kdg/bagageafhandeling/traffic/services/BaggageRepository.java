@@ -21,7 +21,7 @@ public class BaggageRepository {
     }
 
     public synchronized void updateBagage(Baggage baggage) {
-        baggageList.set(baggage.getBaggageID(), baggage);
+        baggageList.set(baggage.getBaggageID()-1, baggage);
     }
 
     public static List<Baggage> getBagages() {
@@ -37,4 +37,7 @@ public class BaggageRepository {
         return result;
     }
 
+    public static synchronized void remove(Baggage baggage){
+        baggageList.remove(baggage);
+    }
 }

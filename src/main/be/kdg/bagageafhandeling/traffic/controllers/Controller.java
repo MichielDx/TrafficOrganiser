@@ -1,13 +1,11 @@
-package main.be.kdg.bagageafhandeling.traffic;
+package main.be.kdg.bagageafhandeling.traffic.controllers;
 
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQRoute;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.RabbitMQSensor;
 import main.be.kdg.bagageafhandeling.traffic.adapters.out.RabbitMQ;
+import main.be.kdg.bagageafhandeling.traffic.engines.LostScheduler;
 import main.be.kdg.bagageafhandeling.traffic.engines.RouteScheduler;
-import main.be.kdg.bagageafhandeling.traffic.services.BaggageRepository;
-import main.be.kdg.bagageafhandeling.traffic.services.InputAPI;
-import main.be.kdg.bagageafhandeling.traffic.services.Retriever;
-import main.be.kdg.bagageafhandeling.traffic.services.TrafficOutput;
+import main.be.kdg.bagageafhandeling.traffic.services.*;
 import main.be.kdg.bagageafhandeling.traffic.services.interfaces.ConveyorService;
 import main.be.kdg.bagageafhandeling.traffic.services.interfaces.FlightService;
 import main.be.kdg.bagageafhandeling.traffic.services.interfaces.MessageInputService;
@@ -31,17 +29,25 @@ public class Controller {
     private Retriever routeMessageRetriever;
     private Retriever sensorMessageRetriever;
     private RouteScheduler routeScheduler;
+    private LostScheduler lostScheduler;
+    private long timeDifference;
 
     public Controller() {
     }
 
     public void initialize() {
         PropertyConfigurator.configure(path);
-        TrafficOutput trafficOutput = new TrafficOutput(routeOutputMessageQueue,statusOutputMessageQueue);
         InputAPI inputAPI = new InputAPI(flightService, conveyorService);
-        routeScheduler = new RouteScheduler(new BaggageRepository(), new RouteRepository(), inputAPI, trafficOutput);
+        Publisher routePublisher = new Publisher(routeOutputMessageQueue, new XmlServiceImpl());
+        Publisher statusPublisher = new Publisher(statusOutputMessageQueue, new XmlServiceImpl());
+        routeScheduler = new RouteScheduler(new BaggageRepository(), new RouteRepository(), inputAPI, routePublisher, statusPublisher);
+        lostScheduler = new LostScheduler(statusPublisher, 300000, timeDifference);
         routeMessageRetriever = new Retriever(routeInputMessageQueue, routeScheduler);
         sensorMessageRetriever = new Retriever(sensorInputMessageQueue, routeScheduler);
+<<<<<<< HEAD:src/main/be/kdg/bagageafhandeling/traffic/Controller.java
+=======
+        new Thread(lostScheduler).start();
+>>>>>>> 4b08b224b7a37862e30485a86c529ca32a7bfdad:src/main/be/kdg/bagageafhandeling/traffic/controllers/Controller.java
     }
 
     public void setRouteInputMessageQueue(MessageInputService service) {
@@ -60,7 +66,15 @@ public class Controller {
         this.flightService = flightService;
     }
 
-    public void setStatusOutputMessageQueue(MessageOutputService statusOutputMessageQueue) {this.statusOutputMessageQueue = statusOutputMessageQueue;}
+    public void setStatusOutputMessageQueue(MessageOutputService statusOutputMessageQueue) {
+        this.statusOutputMessageQueue = statusOutputMessageQueue;
+    }
 
-    public void setRouteOutputMessageQueue(MessageOutputService routeOutputMessageQueue) {this.routeOutputMessageQueue = routeOutputMessageQueue;}
+    public void setRouteOutputMessageQueue(MessageOutputService routeOutputMessageQueue) {
+        this.routeOutputMessageQueue = routeOutputMessageQueue;
+    }
+
+    public void setTimeDifference(long timeDifference) {
+        this.timeDifference = timeDifference;
+    }
 }
