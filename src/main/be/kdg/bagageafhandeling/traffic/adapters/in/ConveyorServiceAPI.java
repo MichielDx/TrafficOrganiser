@@ -15,7 +15,6 @@ import java.io.IOException;
  * Created by Michiel on 5/11/2016.
  */
 public class ConveyorServiceAPI implements ConveyorService {
-    private ConveyorService conveyorService;
     private Retrofit retrofit;
     private RouteDTO routeDTO;
     private ConveyorServiceProxy conveyorServiceProxy;

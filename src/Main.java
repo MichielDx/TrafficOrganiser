@@ -14,10 +14,11 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) {
-        MessageInputService rabbitMQSensor;
         RouteScheduler routeScheduler = new RouteScheduler(new BaggageRepository(), new RouteRepository());
         Retriever routeMessageRetriever = new Retriever(new RabbitMQRoute("baggageOutputQueue"),routeScheduler);
         Retriever sensorMessageRetriever = new Retriever(new RabbitMQSensor("sensorOutputQueue"),routeScheduler);
+        routeMessageRetriever.initialize();
+        sensorMessageRetriever.initialize();
 
     }
 }
