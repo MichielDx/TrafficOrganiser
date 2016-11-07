@@ -13,10 +13,10 @@ public class Main {
         Controller controller = new Controller();
         controller.setConveyorService(new ConveyorServiceAPI());
         controller.setFlightService(new FlightServiceAPI());
-        controller.setRouteInputMessageQueue(new RabbitMQRoute("baggageOutputQueue"));
-        controller.setSensorInputMessageQueue(new RabbitMQSensor("sensorOutputQueue"));
-        controller.setRouteOutputMessageQueue(new RabbitMQ("routeOutputQueue"));
-        controller.setStatusOutputMessageQueue(new RabbitMQ("statusOutputQueue"));
+        controller.setRouteInputMessageQueue(new RabbitMQRoute("baggageQueue"));
+        controller.setSensorInputMessageQueue(new RabbitMQSensor("sensorQueue"));
+        controller.setRouteOutputMessageQueue(new RabbitMQ("routeQueue"));
+        controller.setStatusOutputMessageQueue(new RabbitMQ("statusQueue"));
         controller.setTimeDifference(120000);
         controller.initialize();
     }
