@@ -1,3 +1,5 @@
+package main;
+
 import main.be.kdg.bagageafhandeling.traffic.controllers.Controller;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.ConveyorServiceAPI;
 import main.be.kdg.bagageafhandeling.traffic.adapters.in.FlightServiceAPI;
