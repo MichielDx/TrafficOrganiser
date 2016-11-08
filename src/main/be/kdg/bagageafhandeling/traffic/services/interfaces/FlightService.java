@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 /**
- * Created by Michiel on 5/11/2016.
+ * A FlightService fetches {@link FlightInfo} from a remote host
  */
 public interface FlightService {
     @GET("/flightservice/{flightid}")

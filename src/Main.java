@@ -18,6 +18,7 @@ public class Main {
         controller.setRouteOutputMessageQueue(new RabbitMQ("routeQueue"));
         controller.setStatusOutputMessageQueue(new RabbitMQ("statusQueue"));
         controller.setTimeDifference(120000);
+        controller.setClearCacheTime(21600000);
         controller.initialize();
     }
 }

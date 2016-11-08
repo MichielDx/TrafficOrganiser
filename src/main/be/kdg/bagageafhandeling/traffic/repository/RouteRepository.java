@@ -1,4 +1,4 @@
-package main.be.kdg.bagageafhandeling.traffic.services.route;
+package main.be.kdg.bagageafhandeling.traffic.repository;
 
 import main.be.kdg.bagageafhandeling.traffic.model.route.RouteDTO;
 

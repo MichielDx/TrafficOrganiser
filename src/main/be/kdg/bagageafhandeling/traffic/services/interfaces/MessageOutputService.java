@@ -3,7 +3,7 @@ package main.be.kdg.bagageafhandeling.traffic.services.interfaces;
 import main.be.kdg.bagageafhandeling.traffic.exceptions.MessageOutputException;
 
 /**
- * Created by Michiel on 5/11/2016.
+ * A MessageOutputService publishes a String message in a certain format to a message broker
  */
 public interface MessageOutputService {
     /**

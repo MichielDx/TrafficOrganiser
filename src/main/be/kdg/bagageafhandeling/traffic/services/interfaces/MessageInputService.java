@@ -5,7 +5,7 @@ import main.be.kdg.bagageafhandeling.traffic.exceptions.MessageInputException;
 import java.util.Observer;
 
 /**
- * Created by Michiel on 5/11/2016.
+ * A MessageInputService receives and converts a String message from a message broker
  */
 public interface MessageInputService {
     /**

@@ -1,7 +1,7 @@
 package main.be.kdg.bagageafhandeling.traffic.services.interfaces;
 
 /**
- * Created by Michiel on 6/11/2016.
+ * A XmlService serializes a Object to a certain format
  */
 public interface XmlService {
     public String serialize(Object object);
